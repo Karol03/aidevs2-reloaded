@@ -4,6 +4,7 @@ from langchain_core.output_parsers import StrOutputParser
 from threading import Semaphore, Thread
 import requests
 import os
+import re
 
 
 class AsyncChat:
@@ -81,6 +82,33 @@ class OpenAIApi:
         print(f"[Embeddings] Response received {r.json()}")
         if r.status_code == 200:
             return r.json()['data']
+        else:
+            print(f"[ERROR][OpenAIApi] Invalid status code = {r.status_code}")
+            exit(5)
+
+    def transcription(self, content):
+        file_path = "to_transcript.mp3"
+        if re.search(pattern='^http.://.*', string=content):
+            sound_raw = requests.request("GET", content)
+            with open(file_path, "wb") as f:
+                f.write(sound_raw.content)
+        elif re.search(pattern='^([a-zA-Z]):\\\\.*', string=content):
+            if not os.path.isfile(content):
+                print(f"[ERROR][OpenAIApi] A transcription of a file that does not exist was requested '{content}'")
+                exit(6)
+            file_path = content
+        else:
+            print(f"[ERROR][OpenAIApi] Incorrect 'content = '{content}'' parameter, provide path or link to audio file")
+            exit(7)
+
+        files = {'file': open(file_path, 'rb')}
+        r = requests.post('https://api.openai.com/v1/audio/transcriptions',
+                          files=files,
+                          data={'model': 'whisper-1'},
+                          headers={'Authorization': f"Bearer {self.open_ai_token}"})
+        print(f"[Transcription] Response received {r.json()}")
+        if r.status_code == 200:
+            return r.json()['text']
         else:
             print(f"[ERROR][OpenAIApi] Invalid status code = {r.status_code}")
             exit(5)

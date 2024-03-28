@@ -8,6 +8,7 @@ blogger = __import__('03_blogger')
 liar = __import__('04_liar')
 inprompt = __import__('05_inprompt')
 embedding = __import__('06_embedding')
+whisper = __import__('07_whisper')
 ###
 
 
@@ -16,4 +17,4 @@ load_dotenv()
 
 
 # Run tasks
-embedding.embedding()
+whisper.whisper()
