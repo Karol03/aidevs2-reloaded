@@ -9,6 +9,7 @@ liar = __import__('04_liar')
 inprompt = __import__('05_inprompt')
 embedding = __import__('06_embedding')
 whisper = __import__('07_whisper')
+functions = __import__('08_functions')
 ###
 
 
@@ -17,4 +18,4 @@ load_dotenv()
 
 
 # Run tasks
-whisper.whisper()
+functions.functions()
