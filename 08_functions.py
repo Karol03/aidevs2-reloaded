@@ -1,5 +1,4 @@
 from AiDevsApi import AiDevsApi
-from OpenAIApi import OpenAIApi
 
 
 def functions():

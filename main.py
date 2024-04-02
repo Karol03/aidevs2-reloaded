@@ -10,6 +10,8 @@ inprompt = __import__('05_inprompt')
 embedding = __import__('06_embedding')
 whisper = __import__('07_whisper')
 functions = __import__('08_functions')
+rodo = __import__('09_rodo')
+scraper = __import__('10_scraper')
 ###
 
 
@@ -18,4 +20,4 @@ load_dotenv()
 
 
 # Run tasks
-functions.functions()
+scraper.scraper()

@@ -61,7 +61,7 @@ class AiDevsApi:
         print(f"Response collected: \"{r.json()}\"")
         if r.json()['code'] != 0:
             print(f"[Error] Code {r.json()['code']}")
-            print(f"[Error] Why: {r.json()['msg']}")
+            print(f"[Error] What: {r.json()['msg']}")
         return r.json()['code']
 
 
