@@ -48,3 +48,4 @@ def scraper():
 
     if tries >= max_tries:
         print(f"[FAILED] Hit the max tries of {max_tries}, no respond has been sent back")
+        exit(10)
