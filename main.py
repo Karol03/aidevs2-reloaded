@@ -13,6 +13,7 @@ functions = __import__('08_functions')
 rodo = __import__('09_rodo')
 scraper = __import__('10_scraper')
 whoami = __import__('11_whoami')
+search = __import__('12_search')
 ###
 
 
@@ -21,4 +22,4 @@ load_dotenv()
 
 
 # Run tasks
-whoami.whoami()
+search.search()

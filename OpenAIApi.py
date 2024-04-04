@@ -7,34 +7,27 @@ import os
 import re
 
 
-class AsyncChat:
-    def __init__(self, llm, max_concurrent):
-        self.llm = llm
+class ConcurrentAsync:
+    def __init__(self, task, max_concurrent):
+        self.task = task
         self.semaphore = Semaphore(max_concurrent)
         self.results = {}
 
-    def invoke(self, prompts, system):
-        self.results = {i: None for i in range(len(prompts))}
-        requests = [self.request(i, prompt, system) for i, prompt in enumerate(prompts)]
+    def invoke(self, *args):
+        self.results = {i: None for i in range(len(args))}
+        requests = [self.request(i, *arg) for i, arg in enumerate(args)]
         for request in requests:
             request.join()
         self.results = sorted(self.results.items())
         return [result for i, result in self.results]
 
-    def task(self, i, prompt, system):
+    def job(self, i, *args):
         with self.semaphore:
-            chain = ChatPromptTemplate.from_messages([
-                ("system", "{system}"),
-                ("user", "{input}")
-            ]) | self.llm | StrOutputParser()
-            self.results[i] = chain.invoke({
-                "system": system,
-                "input": prompt
-            })
-            print(f"Task {i} for prompt \"{prompt}\" done")
+            self.results[i] = self.task(*args)
+            print(f"Job {i} finished")
 
-    def request(self, i, prompt, system):
-        thread = Thread(target=self.task, args=(i, prompt, system))
+    def request(self, i, *args):
+        thread = Thread(target=self.job, args=(i, *args))
         thread.start()
         return thread
 
@@ -61,8 +54,8 @@ class OpenAIApi:
         return response
 
     def multiple_chat(self, prompts, system='', max_concurrent=5):
-        chat = AsyncChat(self.llm, max_concurrent=max_concurrent)
-        return chat.invoke(prompts=prompts, system=system)
+        jobs = ConcurrentAsync(task=self.chat, max_concurrent=max_concurrent)
+        return jobs.invoke(*[(prompt, system) for prompt in prompts])
 
     def moderate(self, content, model='text-moderation-latest'):
         r = requests.post('https://api.openai.com/v1/moderations',
@@ -81,10 +74,14 @@ class OpenAIApi:
                           headers={'Authorization': f"Bearer {self.open_ai_token}"})
         print(f"[Embeddings] Response received {r.json()}")
         if r.status_code == 200:
-            return r.json()['data']
+            return r.json()['data'][0]['embedding']
         else:
             print(f"[ERROR][OpenAIApi] Invalid status code = {r.status_code}")
             exit(5)
+
+    def multiple_embeddings(self, contents, model='text-embedding-ada-002', max_concurrent=5):
+        jobs = ConcurrentAsync(task=self.embeddings, max_concurrent=max_concurrent)
+        return jobs.invoke(*[(content, model) for content in contents])
 
     def transcription(self, content):
         file_path = "to_transcript.mp3"

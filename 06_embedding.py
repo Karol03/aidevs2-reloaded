@@ -7,6 +7,6 @@ def embedding():
     api_aidevs = AiDevsApi()
 
     ai_task = api_aidevs.get_task(task_name="embedding")
-    embeddings_array = api_openai.embeddings(content="Hawaiian pizza")[0]['embedding']
+    embeddings_array = api_openai.embeddings(content="Hawaiian pizza")
     answer = {"answer": embeddings_array}
     api_aidevs.respond(answer=answer)
