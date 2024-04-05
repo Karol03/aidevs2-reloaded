@@ -14,6 +14,7 @@ rodo = __import__('09_rodo')
 scraper = __import__('10_scraper')
 whoami = __import__('11_whoami')
 search = __import__('12_search')
+people = __import__('13_people')
 ###
 
 
@@ -22,4 +23,4 @@ load_dotenv()
 
 
 # Run tasks
-search.search()
+people.people()

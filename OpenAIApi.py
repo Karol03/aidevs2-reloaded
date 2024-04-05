@@ -33,9 +33,12 @@ class ConcurrentAsync:
 
 
 class OpenAIApi:
-    def __init__(self):
+    def __init__(self, temperature=0.7):
         self.open_ai_token = os.environ['OPEN_AI_KEY']
-        self.llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key=self.open_ai_token, max_tokens=2048)
+        self.llm = ChatOpenAI(model="gpt-3.5-turbo",
+                              openai_api_key=self.open_ai_token,
+                              max_tokens=2048,
+                              temperature=temperature)
         self.template = ChatPromptTemplate.from_messages([
             ("system", "{system}"),
             ("user", "{input}")
