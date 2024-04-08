@@ -15,6 +15,7 @@ scraper = __import__('10_scraper')
 whoami = __import__('11_whoami')
 search = __import__('12_search')
 people = __import__('13_people')
+knowledge = __import__('14_knowledge')
 ###
 
 
@@ -23,4 +24,4 @@ load_dotenv()
 
 
 # Run tasks
-people.people()
+knowledge.knowledge()
