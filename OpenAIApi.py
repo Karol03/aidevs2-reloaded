@@ -1,6 +1,7 @@
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from langchain_core.output_parsers.openai_tools import PydanticToolsParser
 from threading import Semaphore, Thread
 import requests
 import os
@@ -81,6 +82,16 @@ class OpenAIApi:
         else:
             print(f"[ERROR][OpenAIApi] Invalid status code = {r.status_code}")
             exit(5)
+
+    def function_calling(self, prompt, functions):
+        output_parser = StrOutputParser()
+        chain = self.template | self.llm | output_parser
+        print(f"[OpenAIApi] Invoke function calling for: \"{functions}\"")
+        llm_with_tools = self.llm.bind_tools(functions)
+        tool_chain = llm_with_tools | PydanticToolsParser(tools=functions)
+        result = tool_chain.invoke(prompt)
+        print(f"[OpenAIApi] Get the response: \"{result}\"")
+        return result
 
     def multiple_embeddings(self, contents, model='text-embedding-ada-002', max_concurrent=5):
         jobs = ConcurrentAsync(task=self.embeddings, max_concurrent=max_concurrent)

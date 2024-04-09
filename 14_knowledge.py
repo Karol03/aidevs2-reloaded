@@ -1,6 +1,5 @@
 from AiDevsApi import AiDevsApi
 from OpenAIApi import OpenAIApi
-import xml.etree.ElementTree as ET
 import requests
 
 

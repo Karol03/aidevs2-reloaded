@@ -16,6 +16,7 @@ whoami = __import__('11_whoami')
 search = __import__('12_search')
 people = __import__('13_people')
 knowledge = __import__('14_knowledge')
+tools = __import__('15_tools')
 ###
 
 
@@ -24,4 +25,4 @@ load_dotenv()
 
 
 # Run tasks
-knowledge.knowledge()
+tools.tools()
