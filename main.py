@@ -17,6 +17,7 @@ search = __import__('12_search')
 people = __import__('13_people')
 knowledge = __import__('14_knowledge')
 tools = __import__('15_tools')
+gnome = __import__('16_gnome')
 ###
 
 
@@ -25,4 +26,4 @@ load_dotenv()
 
 
 # Run tasks
-tools.tools()
+gnome.gnome()

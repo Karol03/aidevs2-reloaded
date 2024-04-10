@@ -6,6 +6,7 @@ from threading import Semaphore, Thread
 import requests
 import os
 import re
+import base64
 
 
 class ConcurrentAsync:
@@ -97,6 +98,50 @@ class OpenAIApi:
         jobs = ConcurrentAsync(task=self.embeddings, max_concurrent=max_concurrent)
         return jobs.invoke(*[(content, model) for content in contents])
 
+    def vision(self, prompt, image_path):
+        image = None
+        if re.search(pattern='^http.://.*', string=image_path):
+            image = requests.request("GET", image_path)
+            image = base64.b64encode(image.content).decode('utf-8')
+        elif re.search(pattern='^([a-zA-Z]):\\\\.*', string=image_path):
+            if not os.path.isfile(image_path):
+                print(f"[ERROR][OpenAIApi] An image file doesn't exists, path = '{image_path}'")
+                exit(6)
+            with open(image_path, 'rb') as img:
+                image = base64.b64encode(img.read()).decode('utf-8')
+        else:
+            print(f"[ERROR][OpenAIApi] Incorrect 'image_path='{image_path}'', provide system path or web link")
+            exit(7)
+
+        print(f"[OpenAIApi] Invoke chat with prompt: \"{prompt}\"")
+        content = {
+            "model": "gpt-4-turbo",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": f"What can you see on the picture?\n\n{prompt}"
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{image}"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "max_tokens": 64
+        }
+        response = requests.post("https://api.openai.com/v1/chat/completions",
+                                 headers={"Authorization": f"Bearer {self.open_ai_token}"},
+                                 json=content)
+
+        print(f"[OpenAIApi] Get the response: \"{response.json()}\"")
+        return response.json()['choices'][0]['message']['content']
+
     def transcription(self, content):
         file_path = "to_transcript.mp3"
         if re.search(pattern='^http.://.*', string=content):
@@ -105,7 +150,7 @@ class OpenAIApi:
                 f.write(sound_raw.content)
         elif re.search(pattern='^([a-zA-Z]):\\\\.*', string=content):
             if not os.path.isfile(content):
-                print(f"[ERROR][OpenAIApi] A transcription of a file that does not exist was requested '{content}'")
+                print(f"[ERROR][OpenAIApi] A transcription of a file that does not exists was requested '{content}'")
                 exit(6)
             file_path = content
         else:
