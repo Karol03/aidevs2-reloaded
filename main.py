@@ -18,6 +18,7 @@ people = __import__('13_people')
 knowledge = __import__('14_knowledge')
 tools = __import__('15_tools')
 gnome = __import__('16_gnome')
+ownapi = __import__('17_ownapi')
 ###
 
 
@@ -26,4 +27,4 @@ load_dotenv()
 
 
 # Run tasks
-gnome.gnome()
+ownapi.ownapi()
