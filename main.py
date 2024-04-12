@@ -19,6 +19,7 @@ knowledge = __import__('14_knowledge')
 tools = __import__('15_tools')
 gnome = __import__('16_gnome')
 ownapi = __import__('17_ownapi')
+ownapipro = __import__('18_ownapipro')
 ###
 
 
@@ -27,4 +28,4 @@ load_dotenv()
 
 
 # Run tasks
-ownapi.ownapi()
+ownapipro.ownapipro()
