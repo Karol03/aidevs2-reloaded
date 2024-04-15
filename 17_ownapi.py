@@ -12,4 +12,4 @@ def ownapi():
     # Scenario structure:
     # Webhook -> OpenAI (Create a completion) -> Create JSON -> Webhook (response)
     #
-    api_aidevs.respond(answer={"answer": os.environ['API_URL']})
+    api_aidevs.respond(answer={"answer": os.environ['MAKE_API_URL']})

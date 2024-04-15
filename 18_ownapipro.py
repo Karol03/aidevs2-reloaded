@@ -10,4 +10,4 @@ def ownapipro():
     #
     # URL to make.com webhook
     #
-    api_aidevs.respond(answer={"answer": os.environ['API_URL']})
+    api_aidevs.respond(answer={"answer": os.environ['MAKE_API_URL']})
