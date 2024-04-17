@@ -22,6 +22,7 @@ ownapi = __import__('17_ownapi')
 ownapipro = __import__('18_ownapipro')
 meme = __import__('19_meme')
 optimaldb = __import__('20_optimaldb')
+google = __import__('21_google')
 ###
 
 
@@ -30,4 +31,4 @@ load_dotenv()
 
 
 # Run tasks
-optimaldb.optimaldb()
+google.google()
