@@ -23,6 +23,7 @@ ownapipro = __import__('18_ownapipro')
 meme = __import__('19_meme')
 optimaldb = __import__('20_optimaldb')
 google = __import__('21_google')
+md2html = __import__('22_md2html')
 ###
 
 
@@ -31,4 +32,4 @@ load_dotenv()
 
 
 # Run tasks
-google.google()
+md2html.md2html()

@@ -35,9 +35,9 @@ class ConcurrentAsync:
 
 
 class OpenAIApi:
-    def __init__(self, temperature=0.7):
+    def __init__(self, temperature=0.7, model="gpt-3.5-turbo"):
         self.open_ai_token = os.environ['OPEN_AI_KEY']
-        self.llm = ChatOpenAI(model="gpt-3.5-turbo",
+        self.llm = ChatOpenAI(model=model,
                               openai_api_key=self.open_ai_token,
                               max_tokens=2048,
                               temperature=temperature)
@@ -166,6 +166,20 @@ class OpenAIApi:
         if r.status_code == 200:
             return r.json()['text']
         else:
+            print(f"[ERROR][OpenAIApi] Invalid status code = {r.status_code}")
+            exit(5)
+
+    def upload_file(self, filename):
+        if not os.path.isfile(filename):
+            print(f"[ERROR][OpenAIApi] JSON file with examples '{filename}' does not exists, cannot fine tune")
+            exit(6)
+
+        files = {'file': open(filename, 'r')}
+        r = requests.post('https://api.openai.com/v1/files',
+                          files=files,
+                          data={'purpose': "fine-tune"},
+                          headers={'Authorization': f"Bearer {self.open_ai_token}"})
+        if r.status_code != 200:
             print(f"[ERROR][OpenAIApi] Invalid status code = {r.status_code}")
             exit(5)
 
